@@ -14,10 +14,7 @@ def conv_bn(inp: int, oup: int, stride: int = 1, leaky: float = 0) -> nn.Sequent
 
 
 def conv_bn_no_relu(inp: int, oup: int, stride: int) -> nn.Sequential:
-    return nn.Sequential(
-        nn.Conv2d(inp, oup, 3, stride, 1, bias=False),
-        nn.BatchNorm2d(oup),
-    )
+    return nn.Sequential(nn.Conv2d(inp, oup, 3, stride, 1, bias=False), nn.BatchNorm2d(oup),)
 
 
 def conv_bn1X1(inp: int, oup: int, stride: int, leaky: float = 0) -> nn.Sequential:
@@ -91,11 +88,11 @@ class FPN(nn.Module):
         output2 = self.output2(y[1])
         output3 = self.output3(y[2])
 
-        up3 = F.interpolate(output3, size=[output2.size(2), output2.size(3)], mode="nearest")
+        up3 = F.interpolate(output3, scale_factor=2, mode="nearest")
         output2 = output2 + up3
         output2 = self.merge2(output2)
 
-        up2 = F.interpolate(output2, size=[output1.size(2), output1.size(3)], mode="nearest")
+        up2 = F.interpolate(output2, scale_factor=2, mode="nearest")
         output1 = output1 + up2
         output1 = self.merge1(output1)
 
